@@ -1,0 +1,1 @@
+def Function (danh_sach):
