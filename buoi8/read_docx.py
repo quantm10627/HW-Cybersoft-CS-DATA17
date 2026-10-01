@@ -2,7 +2,7 @@
 
 from docx import Document
 
-file_path = "cover_letters/le_van_c.docx"
+file_path = "buoi8/cover_letters/le_van_c.docx"
 doc = Document(file_path)
 print(doc)
 print(doc.paragraphs[3].text)
@@ -16,10 +16,3 @@ print(doc.paragraphs[3].text)
 
 # print(doc_content)
 
-doc_content = [
-    paragraph.text
-    for paragraph in doc.paragraphs
-]
-doc_full = "\n".join(doc_content)
-
-print(doc_full)

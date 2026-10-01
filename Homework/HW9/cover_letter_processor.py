@@ -107,13 +107,28 @@ class CoverLetterProcessor:
                 data.get(header, "") 
                 for header in self.headers
             ]
+            
             self.ws.append(values)
         self.wb.save(self.excel_file)
         print("Xử lý thành công")        
 
 
-
-        # Insert dữ liệu vào cột mới
+        # Thêm cột "Tên File"
+    def insert_column (self, col_index, header_name):
+        self.initialize_excel()
+        self.ws.insert_cols(col_index)
+        self.ws.cell(row = 1, column = col_index, value = header_name)
+        docs_files = os.listdir(self.folder_path) #Lấy tất cả các file
+        for file in docs_files: #Duyệt qua từng file
+            if not file.lower().endswith(".docx"):
+                continue
+            file_path = os.path.join(self.folder_path, file)
+        
+            document_text = self.read_docx(file_path)
+            data = self.extract_info(document_text) # Trả ra dictionary  
+            data[header_name] =file
+        self.wb.save(self.excel_file)
+        print("Thêm cột thành công")
         # {
         # "Họ và tên": "Lê Văn C",
         # "Giới tính": "Nam",
