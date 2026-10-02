@@ -91,7 +91,7 @@ class CoverLetterProcessor:
                 info[key] = ""
 
         return info
-
+    #Phương thức 4: Insert data vào file excel
     def process_documents(self):
         self.initialize_excel()
 
@@ -115,21 +115,25 @@ class CoverLetterProcessor:
         print("Xử lý thành công")        
 
 
-        # Thêm cột "Tên File"
+    # Yêu cầu 1 của HW9 : Thêm cột "Tên File"
     def insert_column (self, col_index, header_name):
         self.initialize_excel()
         self.ws.insert_cols(col_index)
         self.ws.cell(row = 1, column = col_index, value = header_name)
         doc_files = os.listdir(self.folder_path) # Lấy danh sách tất cả file bên trong folder
-        i = 2
+        i = 2 # tạo biến đếm index để insert tên file
         for file_name in doc_files:
-            if not file_name.lower().endswith(".docx"):
+            if not file_name.lower().endswith(".docx"): #Kiểm tra file có phải dạng docx không ?
                 continue
         
-            self.ws.cell(row = i, column = col_index, value = file_name )
+            self.ws.cell(row = i, column = col_index, value = file_name ) # điền tên file vào ô có hàng thứ i, cột đã cho trước
             i+=1
         self.wb.save(self.excel_file)
         print("Thêm cột thành công")
+
+
+    # Yêu cầu 5: Tự động điều chỉnh độ rộng cột
+    # Ý tưởng: Duyệt toàn bộ phần tử trong cột, tìm ô có độ dài value là lớn nhất => đặt độ rộng cột = max_size 
     def auto_ajust_column (self):
         self.initialize_excel()
         for col in self.ws.iter_cols():
@@ -147,7 +151,8 @@ class CoverLetterProcessor:
 
 
 
-
+    #Yêu cầu 3: Tìm trường chưa có dữ liệu
+    #Ý tưởng: Dựa vào code hàm proceess_document. Trong quá trình insert data nếu data trống (value == "") thì xuất lỗi
     def tim_truong (self):
         doc_files = os.listdir(self.folder_path)
 
@@ -164,26 +169,3 @@ class CoverLetterProcessor:
 
   
     
-     # {
-        # "Họ và tên": "Lê Văn C",
-        # "Giới tính": "Nam",
-        # "Ngày sinh": "20/08/2003",
-        # "Nơi sinh": "Đà Nẵng",
-        # "Nguyên quán": "Quảng Nam",
-        # "Hộ khẩu thường trú": "...",
-        # "Chỗ ở hiện nay": "...",
-        # "Điện thoại": "090..."
-        # }
-
-        # Khối 1: initialize_excel() -> mở hoặc tạo excel
-        # Khối 2: read_docx() -> đọc word và trả về text
-        # Khối 3: extract_info() -> nhận text -> trích xuất thông tin -> trả về dictionary
-
-        # Pipeline:
-        # B1: Khởi tạo excel
-        # B2: Lấy danh sách file word
-        # B3: Duyệt từng file
-        # B4: Đọc file
-        # B5: Trích xuất thông tin
-        # B6: Đưa dữ liệu vào excel
-        # B7: Lưu excel 

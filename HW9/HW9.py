@@ -6,11 +6,19 @@ processor = CoverLetterProcessor(
 )
 processor.process_documents()
 
+# Các hàm thực hiện đều là các phương thức và được viết trong file cover_letter_processorr 
+# Yêu cầu 1 : Thêm cột tên file và insert dữ liệu
 processor.insert_column(9, "Tên File")
 
-#YC2 : Tìm các trường không có data
+# Yêu cầu 2: Tìm các trường không có data
 processor.tim_truong()
 
+# Yêu cầu 3 và 4: In ra các file xử lý thành công và file lỗi
+# Ý tưởng: Tạo 2 thuộc tính trong lớp đối tượng CoverLetterProcessor là success và error để đếm file thành công và file lỗi
+# Trong quá trình insert data của hàm processo_document, file nào ok thì tăng success
+# Số file lỗi = Tổng file - số file success
 print(f"Số file xử lý thành công: '{processor.success}' Số file lỗi : '{processor.error}'")
 
+# Yêu cầu 5: Tự động điều chỉnh độ rộng cột
 processor.auto_ajust_column()
+
