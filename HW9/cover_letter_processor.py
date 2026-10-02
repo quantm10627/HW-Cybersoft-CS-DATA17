@@ -11,10 +11,10 @@ class CoverLetterProcessor:
     def __init__(self, folder_path, excel_file):
         self.folder_path = folder_path
         self.excel_file = excel_file
-
+        self.success = 0
+        self.error = 0
         self.wb = None
         self.ws = None
-
         self.headers = [
             "Họ và tên",
             "Giới tính",
@@ -29,22 +29,22 @@ class CoverLetterProcessor:
         self.patterns = {
             "Họ và tên": r"Họ và tên\s*:\s*(.*?)\s+Nam/Nữ\s*:",
             
-            "Giới tính": r"Nam/Nữ\s*:\s*([^\n]+)",
+            "Giới tính": r"Nam/Nữ\s*:[ \t]*([^\n]*)",
             
             "Ngày sinh": r"Sinh ngày\s*:\s*(.*?)\s+Nơi sinh\s*:",
             
-            "Nơi sinh": r"Nơi sinh\s*:\s*([^\n]+)",
+            "Nơi sinh": r"Nơi sinh\s*:[ \t]*([^\n]*)",
             
-            "Nguyên quán": r"Nguyên quán\s*:\s*([^\n]+)",
+            "Nguyên quán": r"Nguyên quán\s*:[ \t]*([^\n]*)",
             
             "Hộ khẩu thường trú":
-                r"Nơi đăng ký hộ khẩu thường trú\s*:\s*([^\n]+)",
+                r"Nơi đăng ký hộ khẩu thường trú\s*:[ \t]*([^\n]*)",
             
             "Chỗ ở hiện nay":
-                r"Chỗ ở hiện nay\s*:\s*([^\n]+)",
+                r"Chỗ ở hiện nay\s*:[ \t]*([^\n]*)",
             
             "Điện thoại":
-                r"Điện thoại(?: liên hệ)?\s*:\s*([^\n]+)",
+                r"Điện thoại(?: liên hệ)?\s*:[ \t]*([^\n]*)",
                 
         }
     # Phương thức 1: Khởi tạo, mở excel -> initialize_excel()
@@ -96,6 +96,7 @@ class CoverLetterProcessor:
         self.initialize_excel()
 
         doc_files = os.listdir(self.folder_path) # Lấy danh sách tất cả file bên trong folder
+        sum = len(doc_files)
         for file_name in doc_files:
             if not file_name.lower().endswith(".docx"):
                 continue
@@ -107,8 +108,9 @@ class CoverLetterProcessor:
                 data.get(header, "") 
                 for header in self.headers
             ]
-            
+            self.success += 1
             self.ws.append(values)
+        self.error = sum - self.success
         self.wb.save(self.excel_file)
         print("Xử lý thành công")        
 
@@ -119,22 +121,50 @@ class CoverLetterProcessor:
         self.ws.insert_cols(col_index)
         self.ws.cell(row = 1, column = col_index, value = header_name)
         doc_files = os.listdir(self.folder_path) # Lấy danh sách tất cả file bên trong folder
+        i = 2
         for file_name in doc_files:
             if not file_name.lower().endswith(".docx"):
                 continue
-            file_path = os.path.join(self.folder_path, file_name)
         
-            document_text = self.read_docx(file_path)
-            data = self.extract_info(document_text) # Trả ra dictionary 
-            values = [
-                data.get(header, "") 
-                for header in self.headers
-            ]
-                    
-            self.ws.append(values)
+            self.ws.cell(row = i, column = col_index, value = file_name )
+            i+=1
         self.wb.save(self.excel_file)
         print("Thêm cột thành công")
-        # {
+    def auto_ajust_column (self):
+        self.initialize_excel()
+        for col in self.ws.iter_cols():
+            col_word = col[0].column_letter #Lấy header
+            max_size = 0
+
+            for cell in col:
+                if cell.value is not None:
+                    cell_len = len(str(cell.value))
+                    if cell_len > max_size:
+                        max_size = cell_len
+            self.ws.column_dimensions[col_word].width = max_size + 3 #Tránh trường hợp chữ quá sát
+        self.wb.save(self.excel_file)
+        print("Điều chỉnh độ rộng cột thành công")
+
+
+
+
+    def tim_truong (self):
+        doc_files = os.listdir(self.folder_path)
+
+        for file_name in doc_files:
+            if not file_name.lower().endswith(".docx") or file_name.startswith("~$"):
+                continue
+            file_path = os.path.join(self.folder_path, file_name)
+            document = self.read_docx(file_path) 
+            data = self.extract_info(document)
+
+            for header, values in data.items():
+                if values == "" or values is None:
+                    print(f"File '{file_name}' - Trường '{header}' không được tìm thấy")
+
+  
+    
+     # {
         # "Họ và tên": "Lê Văn C",
         # "Giới tính": "Nam",
         # "Ngày sinh": "20/08/2003",
