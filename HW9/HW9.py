@@ -11,6 +11,7 @@ processor.process_documents()
 processor.insert_column(9, "Tên File")
 
 # Yêu cầu 2: Tìm các trường không có data
+# Lưu ý trong file cover_letter (file data) đã xóa thông tin của một file để minh họa
 processor.tim_truong()
 
 # Yêu cầu 3 và 4: In ra các file xử lý thành công và file lỗi
@@ -19,6 +20,6 @@ processor.tim_truong()
 # Số file lỗi = Tổng file - số file success
 print(f"Số file xử lý thành công: '{processor.success}' Số file lỗi : '{processor.error}'")
 
-# Yêu cầu 5: Tự động điều chỉnh độ rộng cột
+# Yêu cầu 5: Tự động điều chỉnh độ rộng cột trong excel
 processor.auto_ajust_column()
 
