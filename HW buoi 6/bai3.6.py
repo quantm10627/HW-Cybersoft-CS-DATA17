@@ -7,7 +7,6 @@ def xoa_truong(data, field):
         return value
     else:
         return "Trường thông tin không tồn tại"
-    pass
 
 employee = {
     "name": "An",

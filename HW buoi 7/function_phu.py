@@ -8,7 +8,7 @@ def validate_email(email): #YC2
         return False
 
 def validate_phone (phone): #YC3
-    if not phone.isdigit or len(phone) != 10:
+    if not phone.isdigit() or len(phone) != 10:
         return False
     else:
         return True
