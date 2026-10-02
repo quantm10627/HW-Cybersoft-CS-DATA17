@@ -1,0 +1,3 @@
+Cập nhật dữ liệu trong excel
+- Nguyên tắc 1: Không cập nhật dữ liệu trực tiếp trên file gốc
+    => File gốc => Xử lý bằng Python => Lưu lại file mới
