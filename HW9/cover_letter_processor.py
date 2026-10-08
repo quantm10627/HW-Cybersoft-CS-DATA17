@@ -101,7 +101,6 @@ class CoverLetterProcessor:
             if not file_name.lower().endswith(".docx"):
                 continue
             file_path = os.path.join(self.folder_path, file_name)
-
             document_text = self.read_docx(file_path)
             data = self.extract_info(document_text) # Trả ra dictionary 
             values = [
